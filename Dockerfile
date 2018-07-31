@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.6.5
 
 LABEL Name=twhittle Version=0.0.1
 
