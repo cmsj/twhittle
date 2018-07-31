@@ -13,8 +13,7 @@ import tweepy
 
 log = None
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s::%(funcName)s: %(message)s',
-                            datefmt='%Y-%m-%d %H:%M:%S',
+logging.basicConfig(format='%(levelname)s %(name)s::%(funcName)s: %(message)s',
                             level=logging.INFO)
 
 class Twhittle:
