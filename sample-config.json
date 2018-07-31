@@ -2,5 +2,6 @@
     "consumer_key": "foo",
     "consumer_secret": "bar",
     "access_token": "baz",
-    "access_token_secret": "bnq"
+    "access_token_secret": "bnq",
+    "max_tweets_keep": 500
 }

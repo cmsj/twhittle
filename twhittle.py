@@ -50,11 +50,26 @@ class Twhittle:
             self.auth = None
 
     def tweets(self):
-        """Fetch the most recent 200 tweets"""
+        """Fetch the most recent tweets"""
         self.log.info("Fetching most recent tweets")
-        return self.api.user_timeline(count=200)
+        tweets = self.api.user_timeline(count=200, include_rts=True)
+        self.log.info("Started with %d tweets from %d to %d" % (len(tweets), tweets[-1].id, tweets[0].id))
+        i = 16 # We're only allowed to fetch 3200 tweets (16 lots of 200)
+        while i > 0:
+            max_id = tweets[-1].id - 1
+            new_tweets = self.api.user_timeline(count=200, max_id=max_id, include_rts=True)
+            if not new_tweets:
+                self.log.info("Reached the end of the timeline")
+                break
+            self.log.info("Added %d tweets from %d to %d" % (len(new_tweets), 
+                                                             new_tweets[-1].id,
+                                                             new_tweets[0].id))
+            tweets.extend(new_tweets)
+            i = i - 1
+        self.log.info("Fetched a total of %d tweets" % len(tweets))
+        return tweets
 
-    def trim_tweets(self):
+    def trim_tweets(self, max_tweets_keep):
         """Delete any tweets more than 150 tweets old"""
         self.log.info("Looking for tweets to delete")
         if not self.api:
@@ -62,7 +77,7 @@ class Twhittle:
         
         tweets = self.tweets()
         self.log.info("Found %d total tweets" % len(tweets))
-        to_delete = tweets[150:]
+        to_delete = tweets[max_tweets_keep:]
         self.log.info("Found %d to delete" % len(to_delete))
         for tweet in to_delete:
             self.log.info("Destroying tweet: %s" % tweet.id)
@@ -85,10 +100,14 @@ def main():
     @asyncio.coroutine
     def periodic():
         while True:
-            twhittle.trim_tweets()
+            try:
+                twhittle.trim_tweets(CONFIG["max_tweets_keep"])
+            except:
+                log.exception("Exception caught")
+                asyncio.get_event_loop().stop()
             yield from asyncio.sleep(3600)
     
-    task = asyncio.Task(periodic())
+    asyncio.Task(periodic())
 
     try:
         loop.run_forever()
