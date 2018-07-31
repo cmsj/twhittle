@@ -3,3 +3,8 @@ This is a daemon that deletes your oldest tweets, but there are two huge limitat
  * The Twitter API only lets you get your most recent 200 tweets, so use some other method to nuke yourself down to <= 200 tweets, then this daemon will keep you in the 150-200 range.
 
 You probably don't want any of this, but I do, so yay.
+
+This is how I run it:
+ * Take `sample_config.json` and put the relevant values in, put it somewhere as `config.json`
+ * Add this daemon to Docker and add the place where `config.json` lives as `/config`
+ * Tell Docker to set the environment variable `TWHITTLE_CONFIG` to `/config/config.json`
