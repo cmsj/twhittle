@@ -6,5 +6,5 @@ You probably don't want any of this, but I do, so yay.
 
 This is how I run it:
  * Take `sample_config.json` and put the relevant values in, put it somewhere as `config.json`
- * Configure Docker to run twhittle (it's on Docuer hub [here](https://hub.docker.com/r/cmsj/twhittle/) and add the place where `config.json` lives as `/config`
+ * Configure Docker to run twhittle (it's on Docker hub [here](https://hub.docker.com/r/cmsj/twhittle/) and add the place where `config.json` lives as `/config`
  * Tell Docker to set the environment variable `TWHITTLE_CONFIG` to `/config/config.json`
