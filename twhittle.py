@@ -3,8 +3,8 @@
 This is intended to run permanently somewhere (e.g. Docker) and
 delete old tweets.
 
-The Twitter API only lets you enumerate the most recent 200 tweets
-you've made, so we will just aim to keep you around 150 tweets"""
+The Twitter API only lets you enumerate the most recent 3200 tweets
+you've made, so configure this with a number lower than that"""
 import asyncio
 import json
 import logging
@@ -73,7 +73,7 @@ class Twhittle:
         self.log.info("Looking for tweets to delete")
         if not self.api:
             self.login()
-        
+
         tweets = self.tweets()
         self.log.info("Found %d total tweets" % len(tweets))
         to_delete = tweets[max_tweets_keep:]
@@ -81,7 +81,7 @@ class Twhittle:
         for tweet in to_delete:
             self.log.info("Destroying tweet: %s" % tweet.id)
             tweet.destroy()
-        
+
         self.logout()
 
 def main():
@@ -105,7 +105,7 @@ def main():
                 log.exception("Exception caught")
                 asyncio.get_event_loop().stop()
             yield from asyncio.sleep(3600)
-    
+
     asyncio.Task(periodic())
 
     try:
