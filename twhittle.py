@@ -69,7 +69,7 @@ class Twhittle:
         return tweets
 
     def trim_tweets(self, max_tweets_keep):
-        """Delete any tweets more than 150 tweets old"""
+        """Delete any tweets more than max_tweets_keep tweets old"""
         self.log.info("Looking for tweets to delete")
         if not self.api:
             self.login()
