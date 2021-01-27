@@ -21,16 +21,18 @@ class Twhittle:
     consumer_secret = None
     access_token = None
     access_token_secret = None
+    ignore_list = None
     log = None
     auth = None
     api = None
 
-    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
+    def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret, ignore_list):
         """Class initialiser"""
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
         self.access_token = access_token
         self.access_token_secret = access_token_secret
+        self.ignore_list = ignore_list
 
         self.log = logging.getLogger("TWhittle::Twitter")
 
@@ -79,8 +81,9 @@ class Twhittle:
         to_delete = tweets[max_tweets_keep:]
         self.log.info("Found %d to delete" % len(to_delete))
         for tweet in to_delete:
-            self.log.info("Destroying tweet: %s" % tweet.id)
-            tweet.destroy()
+            if tweet.id not in self.ignore_list:
+                self.log.info("Destroying tweet: %s" % tweet.id)
+                tweet.destroy()
 
         self.logout()
 
@@ -94,7 +97,8 @@ def main():
     twhittle = Twhittle(CONFIG["consumer_key"],
                         CONFIG["consumer_secret"],
                         CONFIG["access_token"],
-                        CONFIG["access_token_secret"])
+                        CONFIG["access_token_secret"],
+                        CONFIG["ignore_list"])
 
     @asyncio.coroutine
     def periodic():
